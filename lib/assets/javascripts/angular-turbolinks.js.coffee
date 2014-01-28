@@ -139,7 +139,7 @@ angular.module('ngTurbolinks', []).run(($location, $rootScope, $http, $q)->
       else
         document.location.href = url
     ).error(->
-      console.log 'error'
+      document.location.href = url
     )
 
   # Handle bug in Firefox 26/27 where history.state is initially undefined
