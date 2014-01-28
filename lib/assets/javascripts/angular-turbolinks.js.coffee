@@ -125,6 +125,7 @@ angular.module('ngTurbolinks', []).run(($location, $rootScope, $http, $q)->
     xhr_req.resolve() if xhr_req
     xhr_req = $q.defer()
 
+    triggerEvent 'page:fetch', url: url
     $http.get(url, {
       headers: {
         'Accept' : 'text/html, application/xhtml+xml, application/xml'
@@ -132,6 +133,7 @@ angular.module('ngTurbolinks', []).run(($location, $rootScope, $http, $q)->
       },
       timeout: xhr_req.promise
     }).success((data, status, headers)->
+      triggerEvent 'page:receive'
       if doc = processResponse(data, status, headers)
         changePage extractTitleAndBody(doc)...
         #reflectRedirectedUrl()
@@ -184,10 +186,10 @@ angular.module('ngTurbolinks', []).run(($location, $rootScope, $http, $q)->
       document.location.href = url
 
   $rootScope.$on("$locationChangeStart", (event, url, prev_url)->
-    if url == prev_url
+    if url == prev_url || !triggerEvent 'page:before-change'
       event.preventDefault()
       return false
-
+    
     visit(url)
   )
 )
