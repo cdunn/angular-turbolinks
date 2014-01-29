@@ -36,7 +36,7 @@ $(document).on('ready page:load', ->
 
 ##### TODO
 * add support for turbolinks redirection logic
-* support 'data-method' etc.
+* referer not working properly (ie. redirect_to :back)
 
 ##### Caveats
 * This is a first stab just to try to get around the '10 $digest() iterations reached using $locationWatch' errors I was receiving when using turbolinks with angular
