@@ -3,7 +3,6 @@ angular.module('ngTurbolinks', []).run(($location, $rootScope, $http, $q)->
   loadedAssets = null
   createDocument = null
   xhr_req = null
-  referer = null
 
   triggerEvent = (name, data) ->
     event = document.createEvent 'Events'
@@ -17,7 +16,7 @@ angular.module('ngTurbolinks', []).run(($location, $rootScope, $http, $q)->
     value
 
   rememberReferer = ->
-    referer = document.location.href
+    window.referer = document.location.href
 
   processResponse = (responseText, status, headers)->
     clientOrServerError = ->
@@ -126,10 +125,12 @@ angular.module('ngTurbolinks', []).run(($location, $rootScope, $http, $q)->
     xhr_req = $q.defer()
 
     triggerEvent 'page:fetch', url: url
-    $http.get(url, {
+    $http({
+      url: url,
+      method: 'GET',
       headers: {
-        'Accept' : 'text/html, application/xhtml+xml, application/xml'
-        'X-XHR-Referer' : referer
+        'Accept' : 'text/html, application/xhtml+xml, application/xml',
+        'X-XHR-Referer' : window.referer
       },
       timeout: xhr_req.promise
     }).success((data, status, headers)->
