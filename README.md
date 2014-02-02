@@ -24,19 +24,18 @@ app.config([
   }
 ]);
 ```
+##### Add ng-app to the body element (body content will be replaced with a div#turbolinks_content on each page load)
+<body ng-app='myapp'>
 
-##### Move angular bootstrapping to turbolinks event
+##### (optional) Broadcast angular $destroy for you to remove any global listeners (window, pending http, etc)
 ```sh
-$(document).on('ready page:load', ->
-  angular.bootstrap($("body"), ['app'])
-).on('page:before-change', ->
+$(document).on('page:before-change', ->
   angular.element("body").scope().$broadcast("$destroy")
 )
 ```
 
 ##### TODO
-* add support for turbolinks redirection logic
-* referer not working properly (ie. redirect_to :back)
+* add support for turbolinks redirection logic (referer not working properly (ie. redirect_to :back))
 
 ##### Caveats
 * This is a first stab just to try to get around the '10 $digest() iterations reached using $locationWatch' errors I was receiving when using turbolinks with angular
@@ -44,5 +43,6 @@ $(document).on('ready page:load', ->
   * https://github.com/angular/angular.js/issues/2815 (among others)
   * none of the suggested fixes worked for me and this was happening on chrome
 * This approach uses the angular $location/$locationProvider services for click tracking and pushState, steals the $locationChangeStart event and runs the changed url through turbolinks methods
+* instead of re-bootstrapping angular on each new page:load, I found it much more reliable to $compile the body in the response and replace the body contents (assumes body is the ng-app root element)
 * Does not support any of the turbolinks caching
 * Eventually im hoping angular $locationWatch can play nice with external plugins using pushState...
