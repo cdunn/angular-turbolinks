@@ -1,4 +1,4 @@
-angular.module('ngTurbolinks', []).run(($location, $rootScope, $http, $q)->
+angular.module('ngTurbolinks', []).run(($location, $rootScope, $http, $q, $compile)->
 
   loadedAssets = null
   createDocument = null
@@ -96,7 +96,7 @@ angular.module('ngTurbolinks', []).run(($location, $rootScope, $http, $q)->
 
   changePage = (title, body, csrfToken, runScripts) ->
     document.title = title
-    document.documentElement.replaceChild body, document.body
+    angular.element("body").html($compile("<div id=\"turbolinks_content\">"+body.innerHTML+"</div>")($rootScope))
     CSRFToken.update csrfToken if csrfToken?
     executeScriptTags() if runScripts
     currentState = window.history.state
