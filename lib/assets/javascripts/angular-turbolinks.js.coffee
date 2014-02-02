@@ -3,6 +3,7 @@ angular.module('ngTurbolinks', []).run(($location, $rootScope, $http, $q, $compi
   loadedAssets = null
   createDocument = null
   xhr_req = null
+  referer = null
 
   triggerEvent = (name, data) ->
     event = document.createEvent 'Events'
@@ -16,7 +17,7 @@ angular.module('ngTurbolinks', []).run(($location, $rootScope, $http, $q, $compi
     value
 
   rememberReferer = ->
-    window.referer = document.location.href
+    referer = document.location.href
 
   processResponse = (responseText, status, headers)->
     clientOrServerError = ->
@@ -130,7 +131,7 @@ angular.module('ngTurbolinks', []).run(($location, $rootScope, $http, $q, $compi
       method: 'GET',
       headers: {
         'Accept' : 'text/html, application/xhtml+xml, application/xml',
-        'X-XHR-Referer' : window.referer
+        'X-XHR-Referer' : referer
       },
       timeout: xhr_req.promise
     }).success((data, status, headers)->
