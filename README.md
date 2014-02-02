@@ -34,11 +34,8 @@ $(document).on('page:before-change', ->
 )
 ```
 
-##### TODO
-* add support for turbolinks redirection logic (referer not working properly (ie. redirect_to :back))
-
-##### Caveats
-* This is a first stab just to try to get around the '10 $digest() iterations reached using $locationWatch' errors I was receiving when using turbolinks with angular
+##### Notes
+* This is a first stab just to try to get around the '10 $digest() iterations reached using $locationWatch' errors I was receiving when using turbolinks with angular when using the approach of re-bootstrapping the ng-app on turbolinks page:load 
   * https://github.com/angular/angular.js/issues/3915
   * https://github.com/angular/angular.js/issues/2815 (among others)
   * none of the suggested fixes worked for me and this was happening on chrome
@@ -46,3 +43,6 @@ $(document).on('page:before-change', ->
 * instead of re-bootstrapping angular on each new page:load, I found it much more reliable to $compile the body in the response and replace the body contents (assumes body is the ng-app root element)
 * Does not support any of the turbolinks caching
 * Eventually im hoping angular $locationWatch can play nice with external plugins using pushState...
+
+##### TODO
+* add support for turbolinks redirection logic (referer not working properly (ie. redirect_to :back))
