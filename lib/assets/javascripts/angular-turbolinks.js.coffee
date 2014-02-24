@@ -97,7 +97,10 @@ angular.module('ngTurbolinks', []).run(($location, $rootScope, $http, $q, $compi
 
   changePage = (title, body, csrfToken, runScripts) ->
     document.title = title
-    angular.element("body").html($compile("<div id=\"turbolinks_content\">"+body.innerHTML+"</div>")($rootScope))
+
+    angular.element("body").replaceWith(body)
+    $compile(body)($rootScope)
+
     CSRFToken.update csrfToken if csrfToken?
     executeScriptTags() if runScripts
     currentState = window.history.state
