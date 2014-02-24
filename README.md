@@ -6,8 +6,9 @@ gem "turbolinks"
 gem "angular-turbolinks"
 ```
 
-##### Add angular-turbolinks to your sprockets
+##### Add angular-route and angular-turbolinks to your sprockets
 ```sh
+//= require angular-route
 //= require angular-turbolinks
 ```
 
@@ -24,8 +25,8 @@ app.config([
   }
 ]);
 ```
-##### Add ng-app to the body element (body content will be replaced with a div#turbolinks_content on each page load)
-<body ng-app='myapp'>
+##### Add ng-app to the html element
+<html ng-app='myapp'>
 
 ##### (optional) Broadcast angular $destroy for you to remove any global listeners (window, pending http, etc)
 ```sh
@@ -40,7 +41,6 @@ $(document).on('page:before-change', ->
   * https://github.com/angular/angular.js/issues/2815 (among others)
   * none of the suggested fixes worked for me and this was happening on chrome
 * This approach uses the angular $location/$locationProvider services for click tracking and pushState, steals the $locationChangeStart event and runs the changed url through turbolinks methods
-* instead of re-bootstrapping angular on each new page:load, I found it much more reliable to $compile the body in the response and replace the body contents (assumes body is the ng-app root element)
 * Does not support any of the turbolinks caching
 * Eventually im hoping angular $locationWatch can play nice with external plugins using pushState...
 
