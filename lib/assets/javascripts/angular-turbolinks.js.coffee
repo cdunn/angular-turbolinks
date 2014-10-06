@@ -1,4 +1,6 @@
-angular.module('ngTurbolinks', []).run(($location, $rootScope, $http, $q, $compile)->
+ngTurbolinks = angular.module('ngTurbolinks', [])
+
+ngTurbolinks.factory 'Turbolinks', ($location, $rootScope, $http, $q, $compile) ->
 
   loadedAssets = null
   createDocument = null
@@ -129,15 +131,15 @@ angular.module('ngTurbolinks', []).run(($location, $rootScope, $http, $q, $compi
     xhr_req = $q.defer()
 
     triggerEvent 'page:fetch', url: url
-    $http({
-      url: url,
-      method: 'GET',
-      headers: {
-        'Accept' : 'text/html, application/xhtml+xml, application/xml',
+    promise = $http(
+      url: url
+      method: 'GET'
+      headers:
+        'Accept' : 'text/html, application/xhtml+xml, application/xml'
         'X-XHR-Referer' : referer
-      },
       timeout: xhr_req.promise
-    }).success((data, status, headers)->
+    )
+    promise.success (data, status, headers) ->
       triggerEvent 'page:receive'
       if doc = processResponse(data, status, headers)
         changePage extractTitleAndBody(doc)...
@@ -145,9 +147,8 @@ angular.module('ngTurbolinks', []).run(($location, $rootScope, $http, $q, $compi
         triggerEvent 'page:load'
       else
         document.location.href = url
-    ).error(->
+    promise.error ->
       document.location.href = url
-    )
 
   # Handle bug in Firefox 26/27 where history.state is initially undefined
   historyStateIsDefined =
@@ -190,11 +191,12 @@ angular.module('ngTurbolinks', []).run(($location, $rootScope, $http, $q, $compi
     visit = (url) ->
       document.location.href = url
 
-  $rootScope.$on("$locationChangeStart", (event, url, prev_url)->
-    if url == prev_url || !triggerEvent 'page:before-change'
+  { visit: visit, triggerEvent: triggerEvent } # Turbolinks
+
+ngTurbolinks.run ($rootScope, Turbolinks) ->
+  $rootScope.$on "$locationChangeStart", (event, url, prev_url)->
+    if url == prev_url || !Turbolinks.triggerEvent('page:before-change')
       event.preventDefault()
       return false
-    
-    visit(url)
-  )
-)
+    Turbolinks.visit(url)
+
