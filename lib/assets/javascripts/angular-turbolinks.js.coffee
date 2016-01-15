@@ -1,4 +1,4 @@
-angular.module('ngTurbolinks', []).run(($location, $rootScope, $http, $q, $compile)->
+angular.module('ngTurbolinks', []).run(["$location", "$rootScope", "$http", "$q", "$compile", ($location, $rootScope, $http, $q, $compile)->
 
   loadedAssets = null
   createDocument = null
@@ -10,7 +10,7 @@ angular.module('ngTurbolinks', []).run(($location, $rootScope, $http, $q, $compi
     event.data = data if data
     event.initEvent name, true, true
     document.dispatchEvent event
-
+    
   popCookie = (name) ->
     value = document.cookie.match(new RegExp(name+"=(\\w+)"))?[1].toUpperCase() or ''
     document.cookie = name + '=; expires=Thu, 01-Jan-70 00:00:01 GMT; path=/'
@@ -197,4 +197,5 @@ angular.module('ngTurbolinks', []).run(($location, $rootScope, $http, $q, $compi
     
     visit(url)
   )
-)
+
+])
